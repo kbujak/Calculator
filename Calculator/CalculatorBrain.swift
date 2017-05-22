@@ -10,12 +10,22 @@ import Foundation
 
 struct CalculatorBrain{
     var accumulator: Double?
+    var pendingBinaryOperation: PendingBinaryOperation?
     
     enum Operation{
         case constant(Double)
         case unaryOperation((Double) -> Double)
         case binaryOperation((Double,Double) -> Double)
         case equals
+    }
+    
+    struct PendingBinaryOperation{
+        let function: (Double, Double) -> Double
+        let firstOperand: Double
+        
+        func performOperation(_ secondOperand: Double) -> Double{
+            return function(firstOperand, secondOperand)
+        }
     }
     
     private let operations = [
@@ -40,9 +50,15 @@ struct CalculatorBrain{
                     accumulator = function(operand)
                 }
             case .binaryOperation(let function):
-                break
+                if let operand = accumulator{
+                    pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: operand)
+                    accumulator = nil
+                }
             case .equals:
-                break
+                if accumulator != nil && pendingBinaryOperation != nil{
+                    let operand = accumulator!
+                    accumulator = pendingBinaryOperation?.performOperation(operand)
+                }
             }
         }
     }
