@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
     var isUserInTheMiddle = false
-    //let calculatorBrain = CalculatorBrain()
+    var calculatorBrain = CalculatorBrain()
     
     var displayValue: Double{
         get{
@@ -35,7 +35,16 @@ class ViewController: UIViewController {
     }
     
     @IBAction func performOperation(_ sender: UIButton) {
+        calculatorBrain.setOperand(displayValue)
+        isUserInTheMiddle = false
         
+        if let symbol = sender.currentTitle{
+            calculatorBrain.performOperation(symbol)
+        }
+        
+        if let result = calculatorBrain.result{
+            displayValue = result
+        }
     }
 }
 
