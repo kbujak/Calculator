@@ -11,6 +11,8 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
+    @IBOutlet weak var displayOperations: UILabel!
+    
     var isUserInTheMiddle = false
     var calculatorBrain = CalculatorBrain()
     
@@ -22,9 +24,22 @@ class ViewController: UIViewController {
             display.text = String(newValue)
         }
     }
+    
+    var displayDescription: String{
+        get{
+            return " "
+        }
+        set{
+            displayOperations.text = String(newValue)
+        }
+    }
 
     @IBAction func touchDigt(_ sender: UIButton) {
         let digit = sender.currentTitle!
+        
+        if (digit.compare(".").rawValue) == 0 && (display.text!.contains(".")){
+            return
+        }
         
         if isUserInTheMiddle{
             display.text = display.text! + digit
@@ -36,6 +51,7 @@ class ViewController: UIViewController {
     
     @IBAction func performOperation(_ sender: UIButton) {
         calculatorBrain.setOperand(displayValue)
+        
         isUserInTheMiddle = false
         
         if let symbol = sender.currentTitle{
@@ -44,6 +60,10 @@ class ViewController: UIViewController {
         
         if let result = calculatorBrain.result{
             displayValue = result
+        }
+        
+        if let description = calculatorBrain.operationDescrption{
+            displayDescription = description
         }
     }
 }
